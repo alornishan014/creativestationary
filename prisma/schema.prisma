@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ShopSettings {
+  id    String @id @default(cuid())
+  name  String @default("My Shop")
+  phone String?
+  address String?
+  email String?
+  website String?
+  logo String?
+  currency String @default("USD")
+  timezone String @default("UTC")
+  businessHours String?
+  taxRate Float @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Employee {
+  id        String   @id @default(cuid())
+  name      String
+  mobile    String   @unique
+  email     String?
+  address   String?
+  hireDate  DateTime @default(now())
+  salary    Float?
+  position  String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  sales     Sale[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  price       Float
+  description String?
+  category    String?
+  image       String?
+  sku         String? @unique
+  barcode     String?
+  cost        Float?
+  stock       Int      @default(0)
+  tags        String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  saleItems   SaleItem[]
+}
+
+model Sale {
+  id          String   @id @default(cuid())
+  employeeId  String
+  totalAmount Float
+  customTotal Float?
+  notes       String?
+  status      String   @default("completed")
+  paymentMethod String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt @default(now())
+  
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  items       SaleItem[]
+}
+
+model SaleItem {
+  id        String  @id @default(cuid())
+  saleId    String
+  productId String
+  quantity  Int
+  unitPrice Float
+  customPrice Float?
+  discount   Float?
+  createdAt DateTime @default(now())
+  
+  sale      Sale    @relation(fields: [saleId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
