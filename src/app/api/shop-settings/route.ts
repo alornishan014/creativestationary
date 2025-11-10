@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { withCors } from '@/lib/middleware'
 import { db } from '@/lib/db'
 
-export async function GET() {
+export const GET = withCors(async () => {
   try {
     let settings = await db.shopSettings.findFirst()
     
@@ -16,9 +17,9 @@ export async function GET() {
     console.error('Failed to fetch shop settings:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}
+})
 
-export async function PUT(request: NextRequest) {
+export const PUT = withCors(async (request: NextRequest) => {
   try {
     const { name, phone, address } = await request.json()
     
@@ -40,4 +41,4 @@ export async function PUT(request: NextRequest) {
     console.error('Failed to update shop settings:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}
+})

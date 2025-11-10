@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { withCors } from '@/lib/middleware'
 import { db } from '@/lib/db'
 
-export async function DELETE(
+export const DELETE = withCors(async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
@@ -15,4 +16,4 @@ export async function DELETE(
     console.error('Failed to delete employee:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}
+})

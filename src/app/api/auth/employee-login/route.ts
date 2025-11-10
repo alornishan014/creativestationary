@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { withCors } from '@/lib/middleware'
 import { db } from '@/lib/db'
 
-export async function POST(request: NextRequest) {
+export const POST = withCors(async (request: NextRequest) => {
   try {
     const { mobile } = await request.json()
     
@@ -26,4 +27,4 @@ export async function POST(request: NextRequest) {
     console.error('Employee login error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}
+})

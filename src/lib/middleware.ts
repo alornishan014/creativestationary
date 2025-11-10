@@ -80,7 +80,16 @@ export function withCors(handler: (req: NextRequest) => Promise<NextResponse>) {
 	return async (req: NextRequest) => {
 		// Handle preflight requests
 		if (req.method === 'OPTIONS') {
-			return new NextResponse(null, { status: 200 })
+			const origin = req.headers.get('origin') || '*'
+			const res = new NextResponse(null, { status: 200 })
+			if (corsConfig.origin.includes('*') || corsConfig.origin.includes(origin)) {
+				res.headers.set('Access-Control-Allow-Origin', origin === '*' ? '*' : origin)
+			}
+			res.headers.set('Access-Control-Allow-Methods', corsConfig.methods.join(', '))
+			res.headers.set('Access-Control-Allow-Headers', corsConfig.allowedHeaders.join(', '))
+			res.headers.set('Access-Control-Allow-Credentials', 'true')
+			res.headers.set('Vary', 'Origin')
+			return res
 		}
 
 		const response = await handler(req)
@@ -95,6 +104,7 @@ export function withCors(handler: (req: NextRequest) => Promise<NextResponse>) {
 		if (corsConfig.origin.includes('*') || corsConfig.origin.includes(origin)) {
 			response.headers.set('Access-Control-Allow-Origin', origin === '*' ? '*' : origin)
 		}
+		response.headers.set('Vary', 'Origin')
 		response.headers.set('Access-Control-Allow-Methods', corsConfig.methods.join(', '))
 		response.headers.set('Access-Control-Allow-Headers', corsConfig.allowedHeaders.join(', '))
 		response.headers.set('Access-Control-Allow-Credentials', 'true')

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { withCors } from '@/lib/middleware'
 import { db } from '@/lib/db'
 
-export async function GET(request: NextRequest) {
+export const GET = withCors(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url)
     const startDate = searchParams.get('startDate')
@@ -104,9 +105,9 @@ export async function GET(request: NextRequest) {
       message: 'Failed to fetch sales data'
     }, { status: 500 })
   }
-}
+})
 
-export async function POST(request: NextRequest) {
+export const POST = withCors(async (request: NextRequest) => {
   try {
     const { employeeId, items, totalAmount, customTotal, notes } = await request.json()
     
@@ -234,4 +235,4 @@ export async function POST(request: NextRequest) {
       message: 'Failed to complete sale'
     }, { status: 500 })
   }
-}
+})
