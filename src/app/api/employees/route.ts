@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { withCors } from '@/lib/middleware'
 import { db } from '@/lib/db'
 
-export async function GET(request: NextRequest) {
+export const GET = withCors(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search')
@@ -70,9 +71,9 @@ export async function GET(request: NextRequest) {
       message: 'Failed to fetch employees'
     }, { status: 500 })
   }
-}
+})
 
-export async function POST(request: NextRequest) {
+export const POST = withCors(async (request: NextRequest) => {
   try {
     const { name, mobile, email, address, hireDate } = await request.json()
     
@@ -161,4 +162,4 @@ export async function POST(request: NextRequest) {
       message: 'Failed to create employee'
     }, { status: 500 })
   }
-}
+})

@@ -90,13 +90,15 @@ export default function AdminDashboard() {
     }
   }, [router])
 
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || ''
+
   const fetchData = async () => {
     try {
       const [employeesRes, productsRes, salesRes, settingsRes] = await Promise.all([
-        fetch('/api/employees'),
-        fetch('/api/products'),
-        fetch('/api/sales'),
-        fetch('/api/shop-settings')
+        fetch(`${apiBase}/api/employees`),
+        fetch(`${apiBase}/api/products`),
+        fetch(`${apiBase}/api/sales`),
+        fetch(`${apiBase}/api/shop-settings`)
       ])
 
       if (employeesRes.ok) {
@@ -172,7 +174,7 @@ export default function AdminDashboard() {
 
   const handleAddEmployee = async () => {
     try {
-      const response = await fetch('/api/employees', {
+      const response = await fetch(`${apiBase}/api/employees`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEmployee)
@@ -189,7 +191,7 @@ export default function AdminDashboard() {
 
   const handleAddProduct = async () => {
     try {
-      const response = await fetch('/api/products', {
+      const response = await fetch(`${apiBase}/api/products`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...newProduct, price: parseFloat(newProduct.price) })
@@ -206,7 +208,7 @@ export default function AdminDashboard() {
 
   const handleUpdateShopSettings = async () => {
     try {
-      const response = await fetch('/api/shop-settings', {
+      const response = await fetch(`${apiBase}/api/shop-settings`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(shopForm)
@@ -222,7 +224,7 @@ export default function AdminDashboard() {
 
   const handleDeleteEmployee = async (id: string) => {
     try {
-      const response = await fetch(`/api/employees/${id}`, {
+      const response = await fetch(`${apiBase}/api/employees/${id}`, {
         method: 'DELETE'
       })
 
@@ -236,7 +238,7 @@ export default function AdminDashboard() {
 
   const handleDeleteProduct = async (id: string) => {
     try {
-      const response = await fetch(`/api/products/${id}`, {
+      const response = await fetch(`${apiBase}/api/products/${id}`, {
         method: 'DELETE'
       })
 
